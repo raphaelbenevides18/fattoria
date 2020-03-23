@@ -14,8 +14,19 @@
 
 </head>
 <body>
+<div class="row bg-dark">
+                <div class="col-12">
+                    <div class="text-center text-white my-3 pb-2">
+                        <h2 class="p-1 fm-merienda-one">
+                            Encurtador de Url Spring-Jsp
+                        </h2>
+                        
+                    </div>
+                </div>
+                </div>
+                <br>
 	<div class="container-fluid p-5">
-	<h3 class="text-center jumbotron">Alterar URL</h3>
+	
 
 	<div class="alert alert-info">
 	<a href="#" class="close" data-dismiss="alert">x</a>
@@ -35,11 +46,23 @@
 	</form>
 	
 	<button onClick="getShortUrl()" class="btn btn-info mt-2">Gerar nova URL</button>
-	<button id="btnSubmit" class="btn btn-sucess mt-2">Alterar</button>
+	<button id="btnSubmit" class="btn btn-info mt-2">Alterar</button>
 	<a href="/" class="btn btn-danger mt-2">Voltar</a>
 	
 	
+	
 	</div>
+	<br>
+	 <th>
+                    <div class="container">
+                        <a href="https://github.com/raphaelbenevides18/fattoria" target="_blank" class="d-flex btn btn-secondary btn-block">
+                            <i class="fab fa-github my-auto border-right pr-2"></i>
+                            <span class="m-auto">
+                                /raphaelbenevides18/fattoria
+                            </span>
+                        </a>
+                    </div>
+                    </th>
 	
 
 	

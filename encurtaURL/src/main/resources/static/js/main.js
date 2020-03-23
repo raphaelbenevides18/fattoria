@@ -9,6 +9,8 @@ const shortUrlHidden = document.querySelector('#shorturl_hidden')
 
 const getShortUrl = async () => {
 	
+	event.preventDefault();
+	
 	if (inputUrl.value.length <= 0) {
         alert('Preencha o campo com a url')
         return false
