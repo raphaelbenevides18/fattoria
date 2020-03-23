@@ -114,7 +114,7 @@
 				<artifactId>heroku-maven-plugin</artifactId>
 				<version>0.5.1</version>
 				<configuration>
-					<appName>${heroku.appName}</appName>
+					<appName>${heroku.encurtaurl}</appName>
 				</configuration>
 			</plugin>
 
