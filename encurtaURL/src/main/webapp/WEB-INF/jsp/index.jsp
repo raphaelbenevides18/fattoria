@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>URL</title>
+<title>Encurtador de Url</title>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
 %>
