@@ -113,9 +113,9 @@
 				<groupId>com.heroku.sdk</groupId>
 				<artifactId>heroku-maven-plugin</artifactId>
 				<version>0.5.1</version>
-				<configuration>
+				<!-- <configuration>
 					<appName>${heroku.encurtaurl}</appName>
-				</configuration>
+				</configuration> -->
 			</plugin>
 
 		</plugins>
