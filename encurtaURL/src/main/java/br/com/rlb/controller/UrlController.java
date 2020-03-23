@@ -3,66 +3,106 @@ package br.com.rlb.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
-import br.com.rlb.entity.URL;
-import br.com.rlb.repository.URLRepository;
+import br.com.rlb.entity.Url;
+import br.com.rlb.repository.UrlRepository;
 
-@ResponseBody
-@RequestMapping({"/url"})
-@RestController
+
+
+@Controller
 public class UrlController {
 	
 	@Autowired
-	URLRepository dao;
+	private UrlRepository urldao;
 	
-	@GetMapping
-	public List<URL> findAll(){
-		return dao.findAll();
+	@GetMapping("/")
+	public ModelAndView inicio() {
+		ModelAndView mv = new ModelAndView("index");
+		List<Url> lista = (List<Url>) urldao.findAll();
+		mv.addObject("msg", "Bem-vindo ao encurtador de URL");
+		mv.addObject("lista", lista);
+		return mv;
 	}
 	
-	@GetMapping(path = {"/{idURL}"})
-	public ResponseEntity<?> findById(@PathVariable Long idURL) {
-		return dao.findById(idURL).map(record -> ResponseEntity.ok().body(record))
-				.orElse(ResponseEntity.badRequest().build());
-		
+	@PostMapping("/gravar")
+	public ModelAndView gravar(@RequestParam ("url") String url,
+			@RequestParam ("shorturl_hidden") String shorturl_hidden
+			) {
+		ModelAndView mv = new ModelAndView("index");
+				
+		try {
+			Url u = new Url(null, url, shorturl_hidden);
+
+			urldao.save(u);
+			mv.addObject("lista", urldao.findAll());
+			mv.addObject("msg", "URL gravada");
+
+		}catch (Exception ex) {
+			mv.addObject("msg", "Dados inválidos");
+			mv.addObject("lista", urldao.findAll());
+		}
+		return mv;
 	}
 	
-	@PostMapping
-	public URL gravar(@RequestBody URL url) {
-		return dao.save(url);
-		
+	@GetMapping(value="/excluir/{idurl}")
+	public ModelAndView excluirID(@PathVariable Long idurl) {
+		ModelAndView mv = new ModelAndView("index");
+		try {
+			Url resposta = urldao.findById(idurl).get();
+			urldao.delete(resposta);
+			List<Url> lista = (List<Url>) urldao.findAll();
+			mv.addObject("msg", "Exclusão pelo ID");
+			mv.addObject("lista", lista);
+			
+		}catch (Exception ex) {	
+		}
+		return mv;
 	}
 	
-	@PutMapping(value = "/{idURL}")
-	public ResponseEntity update(@PathVariable("idURL") Long idURL, @RequestBody URL url) {
-		return dao.findById(idURL).map(record -> {
-			record.setIdURL(url.getIdURL());
-			record.setOriginalURL(url.getOriginalURL());
-			record.setShortURL(url.getShortURL());
-			URL update = dao.save(record);
-			return ResponseEntity.ok().body(update);
-		}).orElse(ResponseEntity.badRequest().build());
-		
+	@GetMapping(value="/editar/{idurl}")
+	public ModelAndView editar(@PathVariable Long idurl) {
+		ModelAndView mv = new ModelAndView("alterarUrl");
+		try {
+			Url resposta = urldao.findById(idurl).get();
+			
+			mv.addObject("url", resposta);
+			mv.addObject("msg", "Alteração de URLs");
+			
+		}catch (Exception ex) {	
+		}
+		return mv;
 	}
 	
-	@DeleteMapping(path = {"/{idURL}"})
-	public ResponseEntity<?> delete(@PathVariable("idURL") Long idURL){
-		return dao.findById(idURL).map(record ->{
-			dao.deleteById(idURL);
-			return ResponseEntity.ok().build();
-		}).orElse(ResponseEntity.badRequest().build());
-	}
-	
-	
+	@PostMapping(value="/editar/alterar", 
+			consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+			produces=MediaType.TEXT_PLAIN_VALUE)
+			
+		public ModelAndView alterar(@RequestParam String idurl,
+				@RequestParam String url,
+				@RequestParam String shorturl_hidden
+				) {
+			ModelAndView mv = new ModelAndView("index");
+			try {
+				Url u = new Url(new Long(idurl), url, shorturl_hidden);
+				urldao.save(u);
+				mv.addObject("lista", urldao.findAll());
+				mv.addObject("msg", "Dados alterados");
+				
+			}catch (Exception ex) {
+				mv.addObject("msg", "Erro");
+				
+			}
+			
+
+			return mv;
+		} 
+
 
 }
