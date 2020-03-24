@@ -1,4 +1,5 @@
 # fattoria
-##Projeto teste para FattoriaWeb
+Projeto teste para FattoriaWeb
 
-#API REST SpringBoot
+Projeto feito no Maven com Spring MVC + Jsp e banco de dados MySql
+
