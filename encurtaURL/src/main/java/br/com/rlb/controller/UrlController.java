@@ -2,6 +2,10 @@ package br.com.rlb.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -31,77 +35,90 @@ public class UrlController {
 		return mv;
 	}
 	
-	@PostMapping("/gravar")
-	public ModelAndView gravar(@RequestParam ("url") String url,
-			@RequestParam ("shorturl_hidden") String shorturl_hidden
-			) {
-		ModelAndView mv = new ModelAndView("index");
-				
-		try {
-			Url u = new Url(null, url, shorturl_hidden);
+	@GetMapping("/editar")
+	public ModelAndView editar(HttpServletResponse response,
+	HttpServletRequest request, HttpSession session) {
+	session = request.getSession(true);
+	ModelAndView mv = new ModelAndView("alterarUrl");
+	mv.addObject("msg", "Pagina de Edicao");
+	mv.addObject("lista", urldao.findAll());
+	mv.addObject("url", session.getAttribute("passe"));
 
+	return mv;
+	}
+	
+	@PostMapping("/gravar")
+	public void gravar(@RequestParam ("url") String url,
+			@RequestParam ("shorturl_hidden") String shorturl_hidden, HttpServletResponse response,
+			HttpServletRequest request, HttpSession session) {
+		session = request.getSession(true);
+	
+		try {
+			ModelAndView mv = new ModelAndView("index");
+			Url u = new Url(null, url, shorturl_hidden);
 			urldao.save(u);
-			mv.addObject("lista", urldao.findAll());
-			mv.addObject("msg", "URL gravada");
+			session.setAttribute("lista", urldao.findAll());
+			session.setAttribute("msg", "URL gravada");
+			response.sendRedirect("/");
 
 		}catch (Exception ex) {
-			mv.addObject("msg", "Dados inválidos");
-			mv.addObject("lista", urldao.findAll());
+			ex.printStackTrace();
 		}
-		return mv;
 	}
 	
 	@GetMapping(value="/excluir/{idurl}")
-	public ModelAndView excluirID(@PathVariable Long idurl) {
-		ModelAndView mv = new ModelAndView("index");
+	public void excluirID(@PathVariable Long idurl,  HttpServletResponse response,
+			HttpServletRequest request, HttpSession session) {
+		session = request.getSession(true);
 		try {
+			
 			Url resposta = urldao.findById(idurl).get();
 			urldao.delete(resposta);
 			List<Url> lista = (List<Url>) urldao.findAll();
-			mv.addObject("msg", "Exclusão pelo ID");
-			mv.addObject("lista", lista);
+			session.setAttribute("msg", "Exclusão pelo ID");
+			session.setAttribute("lista", lista);
+			response.sendRedirect("/");
 			
 		}catch (Exception ex) {	
+			ex.printStackTrace();
 		}
-		return mv;
 	}
 	
 	@GetMapping(value="/editar/{idurl}")
-	public ModelAndView editar(@PathVariable Long idurl) {
-		ModelAndView mv = new ModelAndView("alterarUrl");
+	public void editar(@PathVariable Long idurl, HttpServletResponse response, 
+			HttpServletRequest request, HttpSession session) {
+		session = request.getSession(true);
+		
 		try {
+			
 			Url resposta = urldao.findById(idurl).get();
-			
-			mv.addObject("url", resposta);
-			mv.addObject("msg", "Alteração de URLs");
-			
+			session.setAttribute("url", resposta);
+			session.setAttribute("msg", "Alteração de URLs");
+			session.setAttribute("passe", resposta);
+			response.sendRedirect("/editar");
 		}catch (Exception ex) {	
+			ex.printStackTrace();
 		}
-		return mv;
 	}
 	
 	@PostMapping(value="/editar/alterar", 
 			consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE,
 			produces=MediaType.TEXT_PLAIN_VALUE)
-			
-		public ModelAndView alterar(@RequestParam String idurl,
+		public void alterar(@RequestParam String idurl,
 				@RequestParam String url,
-				@RequestParam String shorturl_hidden
-				) {
-			ModelAndView mv = new ModelAndView("index");
+				@RequestParam String shorturl_hidden, HttpServletResponse response, 
+				HttpServletRequest request, HttpSession session) {
+			session = request.getSession(true);
 			try {
 				Url u = new Url(new Long(idurl), url, shorturl_hidden);
 				urldao.save(u);
-				mv.addObject("lista", urldao.findAll());
-				mv.addObject("msg", "Dados alterados");
-				
+				session.setAttribute("lista", urldao.findAll());
+				session.setAttribute("msg", "Dados alterados");
+				response.sendRedirect("/");
 			}catch (Exception ex) {
-				mv.addObject("msg", "Erro");
+				ex.printStackTrace();
 				
 			}
-			
-
-			return mv;
 		} 
 
 
