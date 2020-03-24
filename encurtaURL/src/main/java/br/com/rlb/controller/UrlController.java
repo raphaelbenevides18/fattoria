@@ -40,7 +40,7 @@ public class UrlController {
 	HttpServletRequest request, HttpSession session) {
 	session = request.getSession(true);
 	ModelAndView mv = new ModelAndView("alterarUrl");
-	mv.addObject("msg", "Pagina de Edicao");
+	mv.addObject("msg", "Edicao de Url");
 	mv.addObject("lista", urldao.findAll());
 	mv.addObject("url", session.getAttribute("passe"));
 

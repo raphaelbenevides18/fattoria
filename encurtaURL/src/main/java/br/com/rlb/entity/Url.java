@@ -18,7 +18,7 @@ public class Url implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private  Long idurl;
 	
-	@NotNull(message = "url não pode ser nula.")
+	@NotNull(message = "Url não pode ser nula.")
 	@Size(min=6, max=2000)
 	@Column(unique = true)
 	private String url;
@@ -30,7 +30,7 @@ public class Url implements Serializable{
 	
 	}
 	
-	public Url(Long idurl, @NotNull(message = "url não pode ser nula.") @Size(min = 6, max = 2000) String url,
+	public Url(Long idurl, @NotNull(message = "Url não pode ser nula.") @Size(min = 6, max = 2000) String url,
 			@Size(min = 1) String shorturl) {
 		super();
 		this.idurl = idurl;
@@ -38,7 +38,7 @@ public class Url implements Serializable{
 		this.shorturl = shorturl;
 	}
 
-	public Url(Long idurl, @NotNull(message = "url não pode ser nula.") @Size(min = 6, max = 2000) String url) {
+	public Url(Long idurl, @NotNull(message = "Url não pode ser nula.") @Size(min = 6, max = 2000) String url) {
 		super();
 		this.idurl = idurl;
 		this.url = url;
